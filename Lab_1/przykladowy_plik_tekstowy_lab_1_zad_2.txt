@@ -1,0 +1,1 @@
+Jest to przykładowy plik, który został dodany do repozytorium
