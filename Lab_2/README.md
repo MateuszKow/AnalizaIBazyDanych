@@ -1,2 +1,2 @@
-# Katalog przeznaczony na pliki potrzebne do zrealizowania laboratorium numer 2.
+# Katalog zawierający projekt wykonany w ramach Laboratorium 2.
 
