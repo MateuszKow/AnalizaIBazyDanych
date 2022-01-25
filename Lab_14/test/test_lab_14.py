@@ -1,6 +1,7 @@
-from lab14 import hello,extract_sentiment,text_contain_word,hurwitz_coefficients,hurwitz_necessery_and_suffient
+from lab14 import hello,extract_sentiment,text_contain_word,hurwitz_coefficients,hurwitz_necessery_and_suffient,hurwitz_matrix,hurwitz_stability,hurwitz
 
 import pytest
+import numpy as np
 
 def test_hello():
     got = hello("Mateusz")
@@ -26,8 +27,8 @@ def test_text_contain_word(sample_duck,word,expected_output):
     assert text_contain_word(word,sample_duck) == expected_output
 
 
-test_data_hurwitz_coefficients=[([1,2,3,4,5,6],True),
-([4,5,6,9],True),([-5,1,2,3],False),([2,1,0,3],False),([-1,-2,-3,-4,-5,-6],True)]
+test_data_hurwitz_coefficients=[([1,2,3,4,5,6],(True,[1,2,3,4,5,6])),
+([4,5,6,9],(True,[4,5,6,9])),([-5,1,2,3],(False,[5,-1,-2,-3])),([2,1,0,3],(False,[2,1,0,3])),([-1,-2,-3,-4,-5,-6],(True,[1,2,3,4,5,6]))]
 
 @pytest.mark.parametrize('sample_coefficient,expected_output',test_data_hurwitz_coefficients)
 
@@ -43,10 +44,24 @@ def test_hurwitz_necessery_and_suffient(sample_n_a_s,expected_output):
     assert hurwitz_necessery_and_suffient(sample_n_a_s) == expected_output
 
 
-test_data_stable=[([[10,2,3],[4,5,6],[7,8,9]],False)]
+test_matrix=[([1,2,3,4,5],np.array([[2,4,0,0],[1,3,5,0],[0,2,4,0],[0,1,3,5]])),([10,2,3],np.array([[2,0],[10,3]])),([1,6,4,7,11,2],np.array([[6,7,2,0,0],[1,4,11,0,0],[0,6,7,2,0],[0,1,4,11,0],[0,0,6,7,2]]))]
+
+@pytest.mark.parametrize('matrix_stable,expected_output',test_matrix)
+
+def test_hurwitz_matrix(matrix_stable,expected_output):
+    assert np.all(hurwitz_matrix(matrix_stable) == expected_output)
+
+test_stability=[(np.array([[1,30,0],[1,4,0],[0,1,30]]),False),(np.array([[9,6,0],[2,4,0],[0,9,6]]),True)]
+
+@pytest.mark.parametrize('hurwitz_stable,expected_output',test_stability)
+
+def test_hurwitz_stability(hurwitz_stable,expected_output):
+    assert hurwitz_stability(hurwitz_stable)== expected_output
 
 
-@pytest.mark.parametrize('sample_stable,expected_output',test_data_stable)
+test_hurwitz=[([4,5,6],True),([-5,-8,-5,-5],True),([5,-2,0,5],False),([1,2,3,4,5],False)]
 
-def test_hurwitz_stable(sample_stable,expected_output):
-    assert hurwitz_stable(sample_stable) == expected_output
+@pytest.mark.parametrize('hurwitz_sample,expected_output',test_hurwitz)
+
+def test_hurwitz(hurwitz_sample,expected_output):
+    assert hurwitz(hurwitz_sample)== expected_output

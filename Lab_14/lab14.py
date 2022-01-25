@@ -1,6 +1,6 @@
 from textblob import TextBlob
 from typing import List
-from numpy import linalg, array
+import numpy as np
 
 def hello(name):
     return f'Hello {name}'
@@ -21,16 +21,52 @@ def hurwitz_coefficients(list_of_coefficients:List):
     for elem in list_of_coefficients:
         if elem<=0:
             valid=False
-    return valid
+    return valid,list_of_coefficients
 
 
 def hurwitz_necessery_and_suffient(list_of_coefficients:List):
-    if len(list_of_coefficients) == 3 and hurwitz_coefficients(list_of_coefficients)is True:
+    if len(list_of_coefficients) == 3 and hurwitz_coefficients(list_of_coefficients)[0] is True:
         return True
     else:
         return False
 
+def hurwitz_matrix(list_of_coefficients:List):
+    n=len(list_of_coefficients)-1
+    h_matrix=np.zeros((n,n))
+    p=0
+    for x in range(n):
+        if (x!=0 and x%2==0):
+            p+=1
+        for y in range(n):
+            if x%2==0:
+                if (2*y+1<=n):
+                    h_matrix[x,y+p]=list_of_coefficients[2*y+1]
+            if x%2==1:
+                if (2*y<=n):
+                    h_matrix[x,y+p]=list_of_coefficients[2*y]
 
-print(linalg.det(array([[10,2,3],[4,5,6],[7,8,9]])))
 
+    return h_matrix
+
+
+def hurwitz_stability(matrix):
+    for x in range(1,len(matrix)):
+        mat=matrix[:x,:x]
+        if np.linalg.det(mat)<=0:
+            return False
+    return True
+
+def hurwitz(list_of_coefficients:List):
+    valid,list_coeff=hurwitz_coefficients(list_of_coefficients)
+    if valid is False:
+        return False
+    else:
+        list_of_coefficients=list_coeff
+    if hurwitz_necessery_and_suffient(list_of_coefficients) is True:
+        return True
+    matrix=hurwitz_matrix(list_of_coefficients)
+    if hurwitz_stability(matrix) is False:
+        return False
+    else:
+        return True
 
